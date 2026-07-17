@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+:root {
+  --background: #f6f9f3;
+  --foreground: #243329;
+  --card: #ffffff;
+  --ink-soft: #5c6e62;
+  --line: #e2eade;
+  --green: #3e7c59;
+  --green-soft: #e7f2ea;
+  --honey: #e8a33d;
+  --honey-soft: #fbf1df;
+  --red: #c4574e;
+  --red-soft: #fae9e7;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-green: var(--green);
+  --color-green-soft: var(--green-soft);
+  --color-honey: var(--honey);
+  --color-honey-soft: var(--honey-soft);
+  --color-red: var(--red);
+  --color-red-soft: var(--red-soft);
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.tx-enter {
+  animation: pop 0.25s ease;
+}
