@@ -1,7 +1,7 @@
 import "./globals.css";
 
 export const metadata = {
-  title: "SahabatBuku — Pembukuan Santai UMKM",
+  title: "SobatUMKM — Pembukuan Santai UMKM",
   description: "Catat transaksi pakai bahasa sehari-hari, laporan tetap rapi basis akuntansi profesional.",
 };
 

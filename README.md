@@ -1,4 +1,4 @@
-# SahabatBuku — Panduan Deploy
+# SobatUMKM — Panduan Deploy
 
 Aplikasi pembukuan santai untuk UMKM. Fase 1 MVP: login, smart input transaksi
 (AI Gemini), dashboard keuangan, laporan Laba Rugi, dan target/KPI.
@@ -59,7 +59,7 @@ Buka `http://localhost:3000` — coba daftar akun & catat transaksi pertama.
    ```bash
    git init
    git add .
-   git commit -m "SahabatBuku MVP"
+   git commit -m "SobatUMKM MVP"
    git branch -M main
    git remote add origin <URL_REPO_GITHUB_KAMU>
    git push -u origin main

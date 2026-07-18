@@ -17,13 +17,29 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     const supabase = createClient();
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    setLoading(false);
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) {
+      setLoading(false);
       setError("Email atau kata sandi salah. Coba lagi ya.");
       return;
     }
-    router.push("/dashboard");
+
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", data.user.id)
+      .maybeSingle();
+
+    setLoading(false);
+
+    const tujuan =
+      profile?.role === "mentor"
+        ? "/mentor"
+        : profile?.role === "admin_program" || profile?.role === "super_admin"
+        ? "/admin"
+        : "/dashboard";
+
+    router.push(tujuan);
     router.refresh();
   };
 
@@ -31,8 +47,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-2xl font-extrabold tracking-tight">
-            Sahabat<span className="text-green">Buku</span>
+          <div className="font-display text-2xl font-extrabold tracking-tight">
+            Sobat<span className="text-violet">UMKM</span>
           </div>
           <div className="text-sm text-ink-soft mt-1">Catat santai, laporan tetap rapi.</div>
         </div>
@@ -65,13 +81,13 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="text-sm text-red bg-red-soft rounded-xl px-3 py-2">{error}</div>
+            <div className="text-sm text-pink bg-pink-soft rounded-xl px-3 py-2">{error}</div>
           )}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green text-white rounded-xl py-2.5 font-bold text-sm disabled:opacity-60"
+            className="w-full bg-violet text-white rounded-xl py-2.5 font-bold text-sm disabled:opacity-60"
           >
             {loading ? "Masuk..." : "Masuk"}
           </button>
@@ -79,7 +95,7 @@ export default function LoginPage() {
 
         <div className="text-center text-sm text-ink-soft mt-4">
           Belum punya akun?{" "}
-          <Link href="/register" className="text-green font-semibold">
+          <Link href="/register" className="text-violet font-semibold">
             Daftar di sini
           </Link>
         </div>

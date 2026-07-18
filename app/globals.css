@@ -1,18 +1,20 @@
-@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
-  --background: #f6f9f3;
-  --foreground: #243329;
+  --background: #FAFAFF;
+  --foreground: #241F3D;
   --card: #ffffff;
-  --ink-soft: #5c6e62;
-  --line: #e2eade;
-  --green: #3e7c59;
-  --green-soft: #e7f2ea;
-  --honey: #e8a33d;
-  --honey-soft: #fbf1df;
-  --red: #c4574e;
-  --red-soft: #fae9e7;
+  --ink-soft: #7A7591;
+  --line: #ECE9F7;
+  --violet: #7C5CFC;
+  --violet-soft: #EFEAFF;
+  --pink: #FF6F91;
+  --pink-soft: #FFE9EF;
+  --yellow: #FFC93C;
+  --yellow-soft: #FFF6DC;
+  --mint: #22C6A8;
+  --mint-soft: #DEFBF4;
 }
 
 @theme inline {
@@ -21,13 +23,16 @@
   --color-card: var(--card);
   --color-ink-soft: var(--ink-soft);
   --color-line: var(--line);
-  --color-green: var(--green);
-  --color-green-soft: var(--green-soft);
-  --color-honey: var(--honey);
-  --color-honey-soft: var(--honey-soft);
-  --color-red: var(--red);
-  --color-red-soft: var(--red-soft);
+  --color-violet: var(--violet);
+  --color-violet-soft: var(--violet-soft);
+  --color-pink: var(--pink);
+  --color-pink-soft: var(--pink-soft);
+  --color-yellow: var(--yellow);
+  --color-yellow-soft: var(--yellow-soft);
+  --color-mint: var(--mint);
+  --color-mint-soft: var(--mint-soft);
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-display: "Baloo 2", "Plus Jakarta Sans", system-ui, sans-serif;
 }
 
 body {

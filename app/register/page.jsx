@@ -39,23 +39,13 @@ export default function RegisterPage() {
       return;
     }
 
-    const userId = data.user?.id;
-    if (userId) {
-      // Trigger di database otomatis membuat profil; di sini kita buat tenant (usahanya)
-      const { error: tenantError } = await supabase.from("tenants").insert({
-        nama_usaha: namaUsaha,
-        jenis_usaha: jenisUsaha,
-        owner_id: userId,
-      });
-      if (tenantError) {
-        console.error("Gagal membuat tenant:", tenantError);
-      }
-    }
-
     setLoading(false);
 
+    // Data usaha (nama_usaha, jenis_usaha) dibuat saat pertama kali masuk dashboard,
+    // bukan di sini — supaya tidak gagal diam-diam kalau email konfirmasi masih aktif
+    // dan sesi belum benar-benar berjalan.
     if (data.session) {
-      router.push("/dashboard");
+      router.push(`/dashboard?setup=1&nama_usaha=${encodeURIComponent(namaUsaha)}&jenis_usaha=${encodeURIComponent(jenisUsaha)}`);
       router.refresh();
     } else {
       router.push("/login?terdaftar=1");
@@ -66,8 +56,8 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background px-4 py-10">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="text-2xl font-extrabold tracking-tight">
-            Sahabat<span className="text-green">Buku</span>
+          <div className="font-display text-2xl font-extrabold tracking-tight">
+            Sobat<span className="text-violet">UMKM</span>
           </div>
           <div className="text-sm text-ink-soft mt-1">Daftar dulu, catat santai mulai hari ini.</div>
         </div>
@@ -131,12 +121,12 @@ export default function RegisterPage() {
             />
           </div>
 
-          {error && <div className="text-sm text-red bg-red-soft rounded-xl px-3 py-2">{error}</div>}
+          {error && <div className="text-sm text-pink bg-pink-soft rounded-xl px-3 py-2">{error}</div>}
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-green text-white rounded-xl py-2.5 font-bold text-sm disabled:opacity-60"
+            className="w-full bg-violet text-white rounded-xl py-2.5 font-bold text-sm disabled:opacity-60"
           >
             {loading ? "Mendaftar..." : "Daftar & Mulai Catat"}
           </button>
@@ -144,7 +134,7 @@ export default function RegisterPage() {
 
         <div className="text-center text-sm text-ink-soft mt-4">
           Sudah punya akun?{" "}
-          <Link href="/login" className="text-green font-semibold">
+          <Link href="/login" className="text-violet font-semibold">
             Masuk di sini
           </Link>
         </div>

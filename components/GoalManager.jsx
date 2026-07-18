@@ -76,7 +76,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
         <h1 className="text-lg font-extrabold">Target & KPI</h1>
         <button
           onClick={() => setShowForm((s) => !s)}
-          className="bg-green text-white rounded-full px-4 py-2 text-xs font-bold"
+          className="bg-violet text-white rounded-full px-4 py-2 text-xs font-bold"
         >
           {showForm ? "Batal" : "+ Target Baru"}
         </button>
@@ -121,7 +121,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-green text-white rounded-xl py-2.5 font-bold text-sm disabled:opacity-60"
+            className="w-full bg-violet text-white rounded-xl py-2.5 font-bold text-sm disabled:opacity-60"
           >
             {saving ? "Menyimpan..." : "Simpan Target"}
           </button>
@@ -144,7 +144,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
                   <div className="font-bold text-sm">{g.judul}</div>
                   <div className="text-xs text-ink-soft mt-0.5">
                     {rupiah(g.nilai_saat_ini || 0)} / {rupiah(g.target_nilai)}
-                    {g.status === "tercapai" && <span className="text-green font-bold"> · Tercapai 🎉</span>}
+                    {g.status === "tercapai" && <span className="text-mint font-bold"> · Tercapai 🎉</span>}
                   </div>
                 </div>
                 {editId === g.id ? (
@@ -159,7 +159,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
                     />
                     <button
                       onClick={() => simpanProgress(g.id)}
-                      className="bg-green text-white rounded-lg px-3 py-1 text-xs font-bold"
+                      className="bg-violet text-white rounded-lg px-3 py-1 text-xs font-bold"
                     >
                       Simpan
                     </button>
@@ -170,7 +170,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
                       setEditId(g.id);
                       setEditNilai(String(g.nilai_saat_ini || 0));
                     }}
-                    className="border border-line rounded-full px-3 py-1.5 text-xs font-semibold text-green"
+                    className="border border-line rounded-full px-3 py-1.5 text-xs font-semibold text-violet"
                   >
                     Update →
                   </button>
@@ -178,7 +178,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
               </div>
               <div className="h-2 bg-background rounded-full overflow-hidden mt-3">
                 <div
-                  className={`h-full ${g.status === "tercapai" ? "bg-green" : "bg-honey"}`}
+                  className={`h-full ${g.status === "tercapai" ? "bg-mint" : "bg-yellow"}`}
                   style={{ width: `${persen}%` }}
                 />
               </div>

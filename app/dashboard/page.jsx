@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { createClient } from "@/lib/supabase/server";
 import PanelTransaksi from "@/components/PanelTransaksi";
+import SetupUsaha from "@/components/SetupUsaha";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -16,9 +18,9 @@ export default async function DashboardPage() {
 
   if (!tenant) {
     return (
-      <div className="mt-10 bg-card border border-line rounded-2xl p-6 text-sm text-ink-soft">
-        Usaha kamu belum tercatat di sistem. Coba keluar lalu daftar ulang, atau hubungi admin.
-      </div>
+      <Suspense fallback={null}>
+        <SetupUsaha userId={user.id} />
+      </Suspense>
     );
   }
 

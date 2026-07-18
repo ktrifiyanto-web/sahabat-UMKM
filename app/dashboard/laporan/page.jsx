@@ -40,7 +40,7 @@ export default async function LaporanPage() {
 
   return (
     <div className="mt-6">
-      <Link href="/dashboard" className="text-sm text-green font-semibold">
+      <Link href="/dashboard" className="text-sm text-violet font-semibold">
         ← Kembali
       </Link>
 
@@ -77,7 +77,7 @@ function Baris({ label, nilai, bold, muted, highlight }) {
       className="flex justify-between py-1"
       style={{
         fontWeight: bold ? 800 : 500,
-        color: highlight ? "var(--honey)" : muted ? "var(--ink-soft)" : "var(--foreground)",
+        color: highlight ? "#B8860B" : muted ? "var(--ink-soft)" : "var(--foreground)",
         fontSize: bold ? 15.5 : 14,
       }}
     >

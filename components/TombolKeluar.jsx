@@ -16,7 +16,7 @@ export default function TombolKeluar() {
   return (
     <button
       onClick={keluar}
-      className="text-xs font-semibold text-ink-soft border border-line rounded-full px-3 py-1.5 hover:border-red hover:text-red transition-colors"
+      className="text-xs font-semibold text-ink-soft border border-line rounded-full px-3 py-1.5 hover:border-pink hover:text-pink transition-colors"
     >
       Keluar
     </button>
