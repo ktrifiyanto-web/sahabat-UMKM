@@ -1,13 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const JENIS_USAHA = ["Kuliner", "Fashion", "Craft/Kerajinan", "Jasa", "Lainnya"];
 
 export default function SetupUsaha({ userId }) {
-  const router = useRouter();
   const params = useSearchParams();
   const [namaUsaha, setNamaUsaha] = useState(params.get("nama_usaha") || "");
   const [jenisUsaha, setJenisUsaha] = useState(params.get("jenis_usaha") || JENIS_USAHA[0]);
@@ -34,8 +33,7 @@ export default function SetupUsaha({ userId }) {
       return;
     }
 
-    router.push("/dashboard");
-    router.refresh();
+    window.location.href = "/dashboard";
   };
 
   return (

@@ -144,7 +144,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
                   <div className="font-bold text-sm">{g.judul}</div>
                   <div className="text-xs text-ink-soft mt-0.5">
                     {rupiah(g.nilai_saat_ini || 0)} / {rupiah(g.target_nilai)}
-                    {g.status === "tercapai" && <span className="text-mint font-bold"> · Tercapai 🎉</span>}
+                    {g.status === "tercapai" && <span className="text-green font-bold"> · Tercapai 🎉</span>}
                   </div>
                 </div>
                 {editId === g.id ? (
@@ -178,7 +178,7 @@ export default function GoalManager({ tenantId, userId, goalsAwal }) {
               </div>
               <div className="h-2 bg-background rounded-full overflow-hidden mt-3">
                 <div
-                  className={`h-full ${g.status === "tercapai" ? "bg-mint" : "bg-yellow"}`}
+                  className={`h-full ${g.status === "tercapai" ? "bg-green" : "bg-amber"}`}
                   style={{ width: `${persen}%` }}
                 />
               </div>

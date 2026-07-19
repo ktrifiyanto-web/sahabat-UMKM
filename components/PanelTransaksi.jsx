@@ -161,19 +161,19 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
     <div className="mt-4">
       {/* Ringkasan */}
       <section className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
-        <Kartu label="Uang masuk bulan ini" nilai={rupiah(ringkas.masuk)} warna="text-mint" bg="bg-mint-soft" />
+        <Kartu label="Uang masuk bulan ini" nilai={rupiah(ringkas.masuk)} warna="text-green" bg="bg-green-soft" />
         <Kartu label="Uang keluar" nilai={rupiah(ringkas.keluar)} warna="text-pink" bg="bg-pink-soft" />
         <Kartu
           label="Untung sementara"
           nilai={rupiah(ringkas.laba)}
-          warna={ringkas.laba >= 0 ? "text-mint" : "text-pink"}
+          warna={ringkas.laba >= 0 ? "text-green" : "text-pink"}
           bg="bg-card"
           tebal
         />
       </section>
 
       {ringkas.review > 0 && (
-        <div className="bg-yellow-soft border border-yellow/30 rounded-2xl px-4 py-2.5 text-sm mb-5" style={{ color: "#8A6A05" }}>
+        <div className="bg-amber-soft border border-amber/30 rounded-2xl px-4 py-2.5 text-sm mb-5" style={{ color: "#8A6A05" }}>
           ✋ {ringkas.review} catatan masih kurang yakin kategorinya — cek sebentar di daftar bawah ya.
         </div>
       )}
@@ -194,8 +194,8 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
             <div className="text-center py-10">
               <svg width="88" height="72" viewBox="0 0 120 100" fill="none" className="mx-auto mb-3">
                 <circle cx="60" cy="45" r="34" fill="var(--violet-soft)" />
-                <circle cx="30" cy="20" r="8" fill="var(--yellow-soft)" />
-                <circle cx="94" cy="66" r="11" fill="var(--mint-soft)" />
+                <circle cx="30" cy="20" r="8" fill="var(--amber-soft)" />
+                <circle cx="94" cy="66" r="11" fill="var(--green-soft)" />
                 <path d="M46 48 Q60 60 74 48" stroke="var(--violet)" strokeWidth="4" fill="none" strokeLinecap="round" />
                 <circle cx="50" cy="38" r="4" fill="var(--violet)" />
                 <circle cx="70" cy="38" r="4" fill="var(--violet)" />
@@ -211,9 +211,9 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
                 className="text-[9px] font-extrabold px-2 py-1 rounded-full whitespace-nowrap"
                 style={
                   t.status === "perlu_review"
-                    ? { background: "var(--yellow-soft)", color: "#8A6A05" }
+                    ? { background: "var(--amber-soft)", color: "#8A6A05" }
                     : t.tipe === "masuk"
-                    ? { background: "var(--mint-soft)", color: "#0F8F45" }
+                    ? { background: "var(--green-soft)", color: "#0F8F45" }
                     : { background: "var(--pink-soft)", color: "#C22368" }
                 }
               >
@@ -225,7 +225,7 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
                   {t.tgl} · {t.akun}
                 </div>
               </div>
-              <div className={`font-bold text-sm whitespace-nowrap ${t.tipe === "masuk" ? "text-mint" : ""}`}>
+              <div className={`font-bold text-sm whitespace-nowrap ${t.tipe === "masuk" ? "text-green" : ""}`}>
                 {t.tipe === "masuk" ? "+" : "−"}
                 {rupiah(t.nominal)}
               </div>
@@ -264,7 +264,7 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
             disabled={ocrStatus === "reading"}
             title="Foto struk / nota"
             className="border rounded-xl px-4 text-lg"
-            style={{ borderColor: ocrStatus === "reading" ? "var(--yellow)" : "var(--line)" }}
+            style={{ borderColor: ocrStatus === "reading" ? "var(--amber)" : "var(--line)" }}
           >
             {ocrStatus === "reading" ? "⏳" : "📷"}
           </button>
@@ -279,7 +279,7 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
         </div>
 
         {ocrStatus === "reading" && (
-          <div className="tx-enter mt-3 bg-yellow-soft rounded-xl px-4 py-2.5 text-sm" style={{ color: "#8A6A05" }}>
+          <div className="tx-enter mt-3 bg-amber-soft rounded-xl px-4 py-2.5 text-sm" style={{ color: "#8A6A05" }}>
             📷 Sedang membaca struk... Gemini menarik tanggal, item, dan totalnya untukmu.
           </div>
         )}
@@ -292,7 +292,7 @@ export default function PanelTransaksi({ tenantId, userId, coaList, transaksiAwa
         {preview && (
           <div
             className="tx-enter mt-3 rounded-xl px-4 py-2.5 text-sm"
-            style={{ background: preview.confidence < 0.6 ? "var(--yellow-soft)" : "var(--mint-soft)" }}
+            style={{ background: preview.confidence < 0.6 ? "var(--amber-soft)" : "var(--green-soft)" }}
           >
             <div className="font-bold mb-1">
               {preview.confidence < 0.6

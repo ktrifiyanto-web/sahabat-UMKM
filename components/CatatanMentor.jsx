@@ -84,7 +84,7 @@ export default function CatatanMentor({ tenantId, mentorId, catatanAwal }) {
           <div key={c.id} className="bg-card border border-line rounded-xl p-3">
             <span
               className="text-[9px] font-extrabold px-2 py-0.5 rounded-full"
-              style={{ background: "var(--yellow-soft)", color: "#8A6A05" }}
+              style={{ background: "var(--amber-soft)", color: "#8A6A05" }}
             >
               {c.jenis.toUpperCase()}
             </span>

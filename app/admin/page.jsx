@@ -1,121 +1,78 @@
+import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
 import { rupiah } from "@/lib/format";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
 
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).maybeSingle();
+  const [{ data: tenants }, { data: profiles }, { data: tx }] = await Promise.all([
+    supabase.from("tenants").select("id, nama_usaha, jenis_usaha, mentor_id, owner_id, angkatan"),
+    supabase.from("profiles").select("id, nama, role"),
+    supabase.from("transactions").select("nominal, tipe"),
+  ]);
 
-  const programQuery = supabase.from("programs").select("id, nama, lembaga");
-  const { data: programs } =
-    profile?.role === "super_admin" ? await programQuery : await programQuery.eq("admin_id", user.id);
+  const daftarTenant = tenants || [];
+  const daftarProfil = profiles || [];
+  const mentorMap = {};
+  daftarProfil.forEach((p) => (mentorMap[p.id] = p.nama));
 
-  const daftarProgram = programs || [];
-  const programIds = daftarProgram.map((p) => p.id);
+  const rows = tx || [];
+  const totalMasuk = rows.filter((r) => r.tipe === "masuk").reduce((a, b) => a + (b.nominal || 0), 0);
+  const totalKeluar = rows.filter((r) => r.tipe === "keluar").reduce((a, b) => a + (b.nominal || 0), 0);
 
-  let tenants = [];
-  if (programIds.length > 0) {
-    const { data } = await supabase
-      .from("tenants")
-      .select("id, nama_usaha, jenis_usaha, mentor_id, program_id")
-      .in("program_id", programIds);
-    tenants = data || [];
-  }
-
-  const ringkasanPerTenant = {};
-  for (const t of tenants) {
-    const { data: tx } = await supabase
-      .from("transactions")
-      .select("nominal, tipe, created_at")
-      .eq("tenant_id", t.id)
-      .order("created_at", { ascending: false })
-      .limit(100);
-    const rows = tx || [];
-    const masuk = rows.filter((r) => r.tipe === "masuk").reduce((a, b) => a + (b.nominal || 0), 0);
-    const keluar = rows.filter((r) => r.tipe === "keluar").reduce((a, b) => a + (b.nominal || 0), 0);
-    ringkasanPerTenant[t.id] = {
-      laba: masuk - keluar,
-      jumlahTx: rows.length,
-      terakhirAktif: rows[0]?.created_at || null,
-    };
-  }
+  const jumlahMentor = daftarProfil.filter((p) => p.role === "mentor").length;
+  const belumAdaMentor = daftarTenant.filter((t) => !t.mentor_id).length;
 
   return (
     <div className="mt-4">
-      <h1 className="font-display text-lg font-extrabold mb-1">Monitoring Program</h1>
-      <p className="text-sm text-ink-soft mb-5">
-        {daftarProgram.length > 0
-          ? daftarProgram.map((p) => p.nama).join(", ")
-          : "Belum ada program yang terhubung ke akunmu."}
-      </p>
+      <h1 className="font-display font-bold text-lg mb-4">Ringkasan Platform</h1>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-6">
-        <StatCard label="Total UMKM" value={tenants.length} />
-        <StatCard
-          label="Sudah Ada Mentor"
-          value={tenants.filter((t) => t.mentor_id).length}
-        />
-        <StatCard
-          label="Belum Ada Mentor"
-          value={tenants.filter((t) => !t.mentor_id).length}
-        />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 mb-5">
+        <Kpi label="Total Tenant/UMKM" v={daftarTenant.length} />
+        <Kpi label="Total Mentor" v={jumlahMentor} />
+        <Kpi label="Belum Ada Mentor" v={belumAdaMentor} warna={belumAdaMentor > 0 ? "var(--amber)" : undefined} />
+        <Kpi label="Total Laba Platform" v={rupiah(totalMasuk - totalKeluar)} />
       </div>
 
-      {tenants.length === 0 ? (
-        <div className="bg-card border border-line rounded-2xl p-6 text-sm text-ink-soft text-center">
-          Belum ada UMKM terdaftar di program ini.
+      <h2 className="font-display font-bold text-sm mb-2">Semua Tenant</h2>
+      <div className="glass overflow-hidden">
+        <div className="grid grid-cols-[1.5fr_1fr_auto] gap-2 px-4 py-2.5 border-b border-line text-[9.5px] font-extrabold text-ink-dim uppercase">
+          <span>Usaha</span><span>Mentor</span><span>Aksi</span>
         </div>
-      ) : (
-        <div className="bg-card border border-line rounded-2xl overflow-hidden">
-          <div className="grid grid-cols-[1fr_auto_auto] gap-2 px-4 py-3 border-b border-line text-[11px] font-bold text-ink-soft uppercase">
-            <span>Usaha</span>
-            <span>Laba</span>
-            <span>Mentor</span>
+        {daftarTenant.length === 0 && (
+          <div className="text-xs text-ink-soft text-center py-6">Belum ada tenant. Buat lewat menu Kelola Akun.</div>
+        )}
+        {daftarTenant.map((t) => (
+          <div key={t.id} className="grid grid-cols-[1.5fr_1fr_auto] gap-2 px-4 py-3 border-b border-dashed border-line last:border-0 items-center">
+            <div>
+              <div className="font-bold text-xs">{t.nama_usaha}</div>
+              <div className="text-[9.5px] text-ink-soft">{t.jenis_usaha || "—"}{t.angkatan ? ` · Angkatan ${t.angkatan}` : ""}</div>
+            </div>
+            <div className="text-[10.5px]">
+              {t.mentor_id
+                ? <span className="font-bold text-green">{mentorMap[t.mentor_id] || "✓"}</span>
+                : <span className="text-amber font-bold">Belum ada</span>}
+            </div>
+            <Link href={`/mentor/${t.id}`} className="text-[10px] font-bold text-cyan whitespace-nowrap">
+              Buka sebagai Mentor →
+            </Link>
           </div>
-          {tenants.map((t) => {
-            const r = ringkasanPerTenant[t.id] || { laba: 0, jumlahTx: 0 };
-            return (
-              <div
-                key={t.id}
-                className="grid grid-cols-[1fr_auto_auto] gap-2 px-4 py-3 border-b border-line last:border-0 items-center"
-              >
-                <div>
-                  <div className="font-semibold text-sm">{t.nama_usaha}</div>
-                  <div className="text-[11px] text-ink-soft">
-                    {t.jenis_usaha || "—"} · {r.jumlahTx} transaksi
-                  </div>
-                </div>
-                <div className={`font-display font-bold text-sm text-right ${r.laba >= 0 ? "text-mint" : "text-pink"}`}>
-                  {rupiah(r.laba)}
-                </div>
-                <div className="text-xs">
-                  {t.mentor_id ? (
-                    <span className="px-2 py-1 rounded-full font-bold" style={{ background: "var(--mint-soft)", color: "#0F8F45" }}>
-                      Ada
-                    </span>
-                  ) : (
-                    <span className="px-2 py-1 rounded-full font-bold" style={{ background: "var(--yellow-soft)", color: "#8A6A05" }}>
-                      Belum
-                    </span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
+        ))}
+      </div>
+
+      <p className="text-[10px] text-ink-dim mt-3">
+        💡 Sebagai super admin kamu bisa membuka dashboard mentor mana pun (tautan di atas), dan
+        dashboard tenant bisa dilihat lewat halaman detail yang sama.
+      </p>
     </div>
   );
 }
 
-function StatCard({ label, value }) {
+function Kpi({ label, v, warna }) {
   return (
-    <div className="bg-card border border-line rounded-2xl p-4">
-      <div className="text-xs text-ink-soft font-semibold">{label}</div>
-      <div className="font-display text-2xl font-extrabold mt-1">{value}</div>
+    <div className="glass p-3.5">
+      <div className="text-[9.5px] text-ink-soft font-bold">{label}</div>
+      <div className="font-display font-bold text-lg mt-0.5" style={warna ? { color: warna } : undefined}>{v}</div>
     </div>
   );
 }

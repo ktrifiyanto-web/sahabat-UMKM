@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import GoalManager from "@/components/GoalManager";
 
@@ -13,6 +14,10 @@ export default async function GoalsPage() {
     .eq("owner_id", user.id)
     .limit(1)
     .maybeSingle();
+
+  if (!tenant) {
+    redirect("/dashboard");
+  }
 
   const { data: goals } = await supabase
     .from("goals")
