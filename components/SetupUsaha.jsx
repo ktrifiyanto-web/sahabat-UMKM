@@ -20,11 +20,12 @@ export default function SetupUsaha({ userId }) {
     setError("");
     const supabase = createClient();
 
-    const { error: insertError } = await supabase.from("tenants").insert({
-      nama_usaha: namaUsaha.trim(),
-      jenis_usaha: jenisUsaha,
-      owner_id: userId,
-    });
+    const { error: insertError } = await supabase
+      .from("tenants")
+      .upsert(
+        { nama_usaha: namaUsaha.trim(), jenis_usaha: jenisUsaha, owner_id: userId },
+        { onConflict: "owner_id" }
+      );
 
     setLoading(false);
     if (insertError) {
