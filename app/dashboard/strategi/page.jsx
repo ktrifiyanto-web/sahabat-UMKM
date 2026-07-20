@@ -1,12 +1,12 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUsahaSaya } from "@/lib/usaha-aktif";
 import FormUpsert from "@/components/FormUpsert";
 
 export default async function StrategiPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const { data: tenant } = await supabase
-    .from("tenants").select("id").eq("owner_id", user.id).limit(1).maybeSingle();
+  const { usahaAktif } = await getUsahaSaya();
+  const tenant = usahaAktif;
   if (!tenant) redirect("/dashboard");
 
   const { data } = await supabase.from("strategies").select("*").eq("tenant_id", tenant.id).maybeSingle();

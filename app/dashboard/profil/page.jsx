@@ -1,16 +1,24 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUsahaSaya } from "@/lib/usaha-aktif";
 import FormProfil from "@/components/FormProfil";
 
 export default async function ProfilPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { usahaAktif } = await getUsahaSaya();
+  if (!usahaAktif) redirect("/dashboard");
 
+  // Kolom profil lengkap tidak ada di getUsahaSaya() (yang cuma ringkas),
+  // jadi ambil detail lengkapnya di sini pakai id usaha aktif.
   const { data: tenant } = await supabase
     .from("tenants")
-    .select("id, nama_usaha, jenis_usaha, angkatan, nomor_stand, tahun_berdiri, alamat, jumlah_tim, kontak, media_sosial, marketplace, produk_utama, foto_owner_url, foto_produk_url, logo_url")
-    .eq("owner_id", user.id)
-    .limit(1)
+    .select(
+      "id, nama_usaha, jenis_usaha, angkatan, nomor_stand, tahun_berdiri, alamat, jumlah_tim, kontak, media_sosial, marketplace, produk_utama, foto_owner_url, foto_produk_url, logo_url"
+    )
+    .eq("id", usahaAktif.id)
     .maybeSingle();
   if (!tenant) redirect("/dashboard");
 
