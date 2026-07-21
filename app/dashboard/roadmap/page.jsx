@@ -19,6 +19,7 @@ export default async function RoadmapPage() {
         tabel="roadmaps"
         tenantId={tenant.id}
         dataAwal={data}
+        bisaEdit={tenant.peran === "owner"}
         fields={[
           { key: "target_2026", label: "🏁 Target Akhir 2026", rows: 2, placeholder: "mis. Omzet Rp150jt/bulan, legalitas lengkap" },
           { key: "target_2027", label: "📅 Target 2027", rows: 2, placeholder: "mis. Buka 3 titik reseller, tim jadi 8 orang" },

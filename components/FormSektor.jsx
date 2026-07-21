@@ -11,7 +11,7 @@ const LEGALITAS = [
   "Lengkap (NIB + PIRT/Halal)",
 ];
 
-export default function FormSektor({ tenantId, dataAwal, mode }) {
+export default function FormSektor({ tenantId, dataAwal, mode, bisaEdit = true }) {
   const supabase = createClient();
   const d = dataAwal || {};
   const [form, setForm] = useState({
@@ -75,7 +75,7 @@ export default function FormSektor({ tenantId, dataAwal, mode }) {
         inputMode="numeric"
         value={form[kAktual]}
         onChange={set(kAktual)}
-        disabled={!isTenant}
+        disabled={!isTenant || !bisaEdit}
         placeholder="Aktual"
         className="border border-line rounded-lg px-2.5 py-2 text-xs outline-none bg-white/70 focus:border-cyan disabled:opacity-50 text-center"
       />
@@ -83,7 +83,7 @@ export default function FormSektor({ tenantId, dataAwal, mode }) {
         inputMode="numeric"
         value={form[kTarget]}
         onChange={set(kTarget)}
-        disabled={isTenant}
+        disabled={isTenant || !bisaEdit}
         placeholder="Target"
         className="border border-line rounded-lg px-2.5 py-2 text-xs outline-none bg-white/70 focus:border-cyan disabled:opacity-50 text-center"
       />
@@ -92,6 +92,11 @@ export default function FormSektor({ tenantId, dataAwal, mode }) {
 
   return (
     <div className="glass p-5">
+      {!bisaEdit && (
+        <div className="text-[10.5px] font-bold text-ink-soft bg-white/60 border border-line rounded-lg px-3 py-2 mb-3">
+          👁️ Kamu cuma bisa lihat data ini — cuma pemilik usaha yang bisa mengubah.
+        </div>
+      )}
       <div className="grid grid-cols-[1.2fr_1fr_1fr] gap-2.5 text-[9px] font-extrabold text-ink-dim uppercase pb-1.5 border-b border-line">
         <span>Sektor</span>
         <span className="text-center">Aktual {isTenant && "(isi kamu)"}</span>
@@ -107,7 +112,8 @@ export default function FormSektor({ tenantId, dataAwal, mode }) {
           <select
             value={form.legalitas_status}
             onChange={set("legalitas_status")}
-            className="w-full border border-line rounded-lg px-2.5 py-2 text-xs outline-none bg-white/70"
+            disabled={!bisaEdit}
+            className="w-full border border-line rounded-lg px-2.5 py-2 text-xs outline-none bg-white/70 disabled:opacity-50"
           >
             {LEGALITAS.map((l) => (
               <option key={l} value={l}>{l}</option>
@@ -119,15 +125,18 @@ export default function FormSektor({ tenantId, dataAwal, mode }) {
           <input
             value={form.legalitas_catatan}
             onChange={set("legalitas_catatan")}
+            disabled={!bisaEdit}
             placeholder="mis. PIRT diajukan Juli 2026"
-            className="w-full border border-line rounded-lg px-2.5 py-2 text-xs outline-none bg-white/70 focus:border-cyan"
+            className="w-full border border-line rounded-lg px-2.5 py-2 text-xs outline-none bg-white/70 focus:border-cyan disabled:opacity-50"
           />
         </div>
       </div>
 
-      <button onClick={simpan} disabled={status === "saving"} className="btn-grad rounded-xl px-5 py-2.5 text-xs mt-4 disabled:opacity-60">
-        {status === "saving" ? "Menyimpan..." : status === "ok" ? "✓ Tersimpan" : "Simpan"}
-      </button>
+      {bisaEdit && (
+        <button onClick={simpan} disabled={status === "saving"} className="btn-grad rounded-xl px-5 py-2.5 text-xs mt-4 disabled:opacity-60">
+          {status === "saving" ? "Menyimpan..." : status === "ok" ? "✓ Tersimpan" : "Simpan"}
+        </button>
+      )}
     </div>
   );
 }

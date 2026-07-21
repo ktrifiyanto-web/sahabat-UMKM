@@ -21,7 +21,7 @@ export default async function SektorPage() {
       <p className="text-[11.5px] text-ink-soft mb-4">
         Isi capaian aktualmu — angka target ditetapkan bersama mentormu.
       </p>
-      <FormSektor tenantId={tenant.id} dataAwal={sektor} mode="tenant" />
+      <FormSektor tenantId={tenant.id} dataAwal={sektor} mode="tenant" bisaEdit={tenant.peran === "owner"} />
     </div>
   );
 }

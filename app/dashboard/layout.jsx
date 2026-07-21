@@ -28,6 +28,7 @@ export default async function DashboardLayout({ children }) {
 
   const navItems = [
     { href: "/dashboard", label: "Ringkasan", icon: "🏠", mobile: true },
+    { href: "/dashboard/bisnis-saya", label: "Bisnis Saya", icon: "🏢", mobile: true },
     { href: "/dashboard/chat", label: "Chat Mentor", icon: "💬", mobile: true, badge: chatBelum },
     { divider: "Laporan Lengkap" },
     { href: "/dashboard/sektor", label: "Target & Sektor", icon: "🎯", mobile: true },
@@ -36,8 +37,6 @@ export default async function DashboardLayout({ children }) {
     { href: "/dashboard/strategi", label: "Strategi", icon: "🧭", mobile: false },
     { href: "/dashboard/laporan", label: "Keuangan", icon: "📈", mobile: true },
     { href: "/dashboard/profil", label: "Profil Usaha", icon: "🪪", mobile: true },
-    { divider: "Kelola" },
-    { href: "/dashboard/bisnis-saya", label: "Bisnis Saya", icon: "🏢", mobile: false },
   ];
 
   return (

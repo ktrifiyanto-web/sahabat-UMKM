@@ -19,6 +19,7 @@ export default async function StrategiPage() {
         tabel="strategies"
         tenantId={tenant.id}
         dataAwal={data}
+        bisaEdit={tenant.peran === "owner"}
         fields={[
           { key: "strategi_utama", label: "🎯 Strategi Utama", rows: 3, placeholder: "Strategi besar yang jadi fokus" },
           { key: "prioritas_pengembangan", label: "🚀 Prioritas Pengembangan", rows: 3, placeholder: "Apa yang mau dikembangkan dulu" },

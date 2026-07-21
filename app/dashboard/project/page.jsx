@@ -19,7 +19,7 @@ export default async function ProjectPage() {
     <div className="mt-3">
       <h1 className="font-display font-bold text-lg">Prioritas Project 90 Hari</h1>
       <p className="text-[11.5px] text-ink-soft mb-4">Kelola inisiatif prioritas jangka pendekmu.</p>
-      <ProjectManager tenantId={tenant.id} projectsAwal={projects || []} />
+      <ProjectManager tenantId={tenant.id} projectsAwal={projects || []} bisaEdit={tenant.peran === "owner"} />
     </div>
   );
 }

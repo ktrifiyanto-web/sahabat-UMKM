@@ -9,7 +9,7 @@ const STATUS = {
   selesai: { bg: "var(--green-soft)", color: "var(--green)", label: "SELESAI" },
 };
 
-export default function ProjectManager({ tenantId, projectsAwal }) {
+export default function ProjectManager({ tenantId, projectsAwal, bisaEdit = true }) {
   const supabase = createClient();
   const [projects, setProjects] = useState(projectsAwal);
   const [nama, setNama] = useState("");
@@ -32,6 +32,7 @@ export default function ProjectManager({ tenantId, projectsAwal }) {
   };
 
   const ubahStatus = async (id, statusLama) => {
+    if (!bisaEdit) return;
     const urutan = ["rencana", "berjalan", "selesai"];
     const baru = urutan[(urutan.indexOf(statusLama) + 1) % 3];
     setProjects((p) => p.map((x) => (x.id === id ? { ...x, status: baru } : x)));
@@ -43,6 +44,11 @@ export default function ProjectManager({ tenantId, projectsAwal }) {
 
   return (
     <>
+      {!bisaEdit && (
+        <div className="text-[10.5px] font-bold text-ink-soft bg-white/60 border border-line rounded-lg px-3 py-2 mb-3">
+          👁️ Kamu cuma bisa lihat daftar ini — cuma pemilik usaha yang bisa menambah atau mengubah status.
+        </div>
+      )}
       <div className="glass p-2 mb-4">
         {projects.length === 0 && (
           <div className="text-xs text-ink-soft text-center py-6">Belum ada project. Tambahkan di bawah.</div>
@@ -59,8 +65,9 @@ export default function ProjectManager({ tenantId, projectsAwal }) {
               </div>
               <button
                 onClick={() => ubahStatus(p.id, p.status)}
-                title="Klik untuk ganti status"
-                className="text-[8.5px] font-extrabold px-2.5 py-1.5 rounded-full"
+                title={bisaEdit ? "Klik untuk ganti status" : undefined}
+                disabled={!bisaEdit}
+                className="text-[8.5px] font-extrabold px-2.5 py-1.5 rounded-full disabled:opacity-70"
                 style={{ background: s.bg, color: s.color }}
               >
                 {s.label}
@@ -70,25 +77,27 @@ export default function ProjectManager({ tenantId, projectsAwal }) {
         })}
       </div>
 
-      <div className="glass p-4">
-        <div className="font-display font-bold text-[13px] mb-3">+ Tambah Project Baru</div>
-        <div className="grid sm:grid-cols-2 gap-2.5">
-          <input value={nama} onChange={(e) => setNama(e.target.value)} placeholder="Nama project"
-            className="sm:col-span-2 border border-line rounded-xl px-3.5 py-2.5 text-xs outline-none bg-white/70 focus:border-cyan" />
-          <select value={statusBaru} onChange={(e) => setStatusBaru(e.target.value)}
-            className="border border-line rounded-xl px-3.5 py-2.5 text-xs outline-none bg-white/70">
-            <option value="rencana">Rencana</option>
-            <option value="berjalan">Berjalan</option>
-            <option value="selesai">Selesai</option>
-          </select>
-          <input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)}
-            className="border border-line rounded-xl px-3.5 py-2.5 text-xs outline-none bg-white/70" />
+      {bisaEdit && (
+        <div className="glass p-4">
+          <div className="font-display font-bold text-[13px] mb-3">+ Tambah Project Baru</div>
+          <div className="grid sm:grid-cols-2 gap-2.5">
+            <input value={nama} onChange={(e) => setNama(e.target.value)} placeholder="Nama project"
+              className="sm:col-span-2 border border-line rounded-xl px-3.5 py-2.5 text-xs outline-none bg-white/70 focus:border-cyan" />
+            <select value={statusBaru} onChange={(e) => setStatusBaru(e.target.value)}
+              className="border border-line rounded-xl px-3.5 py-2.5 text-xs outline-none bg-white/70">
+              <option value="rencana">Rencana</option>
+              <option value="berjalan">Berjalan</option>
+              <option value="selesai">Selesai</option>
+            </select>
+            <input type="date" value={tanggal} onChange={(e) => setTanggal(e.target.value)}
+              className="border border-line rounded-xl px-3.5 py-2.5 text-xs outline-none bg-white/70" />
+          </div>
+          <button onClick={tambah} disabled={saving} className="btn-grad rounded-xl px-5 py-2.5 text-xs mt-3 disabled:opacity-60">
+            {saving ? "Menyimpan..." : "Tambah Project"}
+          </button>
+          <p className="text-[9.5px] text-ink-dim mt-2">Tip: klik badge status di daftar untuk mengubah Rencana → Berjalan → Selesai.</p>
         </div>
-        <button onClick={tambah} disabled={saving} className="btn-grad rounded-xl px-5 py-2.5 text-xs mt-3 disabled:opacity-60">
-          {saving ? "Menyimpan..." : "Tambah Project"}
-        </button>
-        <p className="text-[9.5px] text-ink-dim mt-2">Tip: klik badge status di daftar untuk mengubah Rencana → Berjalan → Selesai.</p>
-      </div>
+      )}
     </>
   );
 }

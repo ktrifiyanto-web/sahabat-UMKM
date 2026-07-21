@@ -37,7 +37,7 @@ export default function AppNav({ brandSub, items, footer }) {
         <div className="flex items-center justify-around h-[64px]">
           {items
             .filter((it) => !it.divider && it.mobile)
-            .slice(0, 5)
+            .slice(0, 6)
             .map((it) => (
               <Link
                 key={it.href}
