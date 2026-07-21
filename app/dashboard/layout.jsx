@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUsahaSaya } from "@/lib/usaha-aktif";
 import TombolKeluar from "@/components/TombolKeluar";
 import NotifBell from "@/components/NotifBell";
 import AppNav from "@/components/AppNav";
+import PilihUsaha from "@/components/PilihUsaha";
 
 export default async function DashboardLayout({ children }) {
   const supabase = await createClient();
@@ -11,19 +13,14 @@ export default async function DashboardLayout({ children }) {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("id, nama_usaha")
-    .eq("owner_id", user.id)
-    .limit(1)
-    .maybeSingle();
+  const { daftarUsaha, usahaAktif } = await getUsahaSaya();
 
   let chatBelum = 0;
-  if (tenant) {
+  if (usahaAktif) {
     const { count } = await supabase
       .from("chat_messages")
       .select("id", { count: "exact", head: true })
-      .eq("tenant_id", tenant.id)
+      .eq("tenant_id", usahaAktif.id)
       .eq("dibaca", false)
       .neq("sender_id", user.id);
     chatBelum = count || 0;
@@ -39,21 +36,24 @@ export default async function DashboardLayout({ children }) {
     { href: "/dashboard/strategi", label: "Strategi", icon: "🧭", mobile: false },
     { href: "/dashboard/laporan", label: "Keuangan", icon: "📈", mobile: true },
     { href: "/dashboard/profil", label: "Profil Usaha", icon: "🪪", mobile: true },
+    { divider: "Kelola" },
+    { href: "/dashboard/bisnis-saya", label: "Bisnis Saya", icon: "🏢", mobile: false },
   ];
 
   return (
     <div className="min-h-screen flex">
-      <AppNav brandSub={tenant?.nama_usaha || "Usahamu"} items={navItems} />
+      <AppNav brandSub={usahaAktif?.nama_usaha || "Usahamu"} items={navItems} />
       <div className="flex-1 min-w-0">
-        <header className="flex items-center justify-between px-5 pt-5 pb-1 max-w-4xl mx-auto">
+        <header className="flex items-center justify-between px-5 pt-5 pb-1 max-w-4xl mx-auto gap-2">
           <div className="md:hidden">
             <div className="font-display text-lg font-extrabold">
               Sobat<span className="text-cyan">UMKM</span>
             </div>
-            <div className="text-[10px] text-ink-soft">{tenant?.nama_usaha || "Usahamu"}</div>
+            <div className="text-[10px] text-ink-soft">{usahaAktif?.nama_usaha || "Usahamu"}</div>
           </div>
           <div className="hidden md:block" />
           <div className="flex items-center gap-2">
+            <PilihUsaha daftarUsaha={daftarUsaha} usahaAktifId={usahaAktif?.id} />
             <NotifBell userId={user.id} />
             <TombolKeluar />
           </div>

@@ -190,6 +190,13 @@ language sql stable security definer as $$
   select exists (select 1 from tenants where id = t and mentor_id = auth.uid())
 $$;
 
+-- Apakah user adalah admin dari program tertentu? (security definer supaya
+-- tidak memicu rekursi saat dipanggil dari kebijakan tabel lain)
+create or replace function is_program_admin(prog_id uuid) returns boolean
+language sql stable security definer as $$
+  select exists (select 1 from programs where id = prog_id and admin_id = auth.uid())
+$$;
+
 -- Apakah user adalah admin program yang menaungi tenant ini?
 create or replace function is_tenant_admin(t uuid) returns boolean
 language sql stable security definer as $$
@@ -246,7 +253,7 @@ create policy "akses tenant sesuai peran" on tenants
     owner_id = auth.uid()
     or mentor_id = auth.uid()
     or my_role() = 'super_admin'
-    or exists (select 1 from programs p where p.id = tenants.program_id and p.admin_id = auth.uid())
+    or (program_id is not null and is_program_admin(program_id))
   );
 create policy "owner ubah tenantnya" on tenants
   for update using (owner_id = auth.uid());

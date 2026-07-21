@@ -20,12 +20,12 @@ export default function SetupUsaha({ userId }) {
     setError("");
     const supabase = createClient();
 
+    // Dulu pakai upsert(onConflict: "owner_id") karena 1 owner cuma boleh
+    // 1 usaha. Sejak migrasi 006 (multi-bisnis), owner boleh punya banyak
+    // usaha, jadi ini sekarang INSERT biasa — bikin baris usaha baru.
     const { error: insertError } = await supabase
       .from("tenants")
-      .upsert(
-        { nama_usaha: namaUsaha.trim(), jenis_usaha: jenisUsaha, owner_id: userId },
-        { onConflict: "owner_id" }
-      );
+      .insert({ nama_usaha: namaUsaha.trim(), jenis_usaha: jenisUsaha, owner_id: userId });
 
     setLoading(false);
     if (insertError) {

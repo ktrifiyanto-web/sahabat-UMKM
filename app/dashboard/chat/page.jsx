@@ -1,16 +1,21 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getUsahaSaya } from "@/lib/usaha-aktif";
 import ChatBox from "@/components/ChatBox";
 
 export default async function ChatTenantPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { usahaAktif } = await getUsahaSaya();
+  if (!usahaAktif) redirect("/dashboard");
 
+  // mentor_id tidak ada di getUsahaSaya() (yang cuma ringkas), ambil di sini
   const { data: tenant } = await supabase
     .from("tenants")
     .select("id, mentor_id")
-    .eq("owner_id", user.id)
-    .limit(1)
+    .eq("id", usahaAktif.id)
     .maybeSingle();
   if (!tenant) redirect("/dashboard");
 

@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
+import { getUsahaSaya } from "@/lib/usaha-aktif";
 import { rupiah } from "@/lib/format";
 import { hitungSkor, labelSkor } from "@/lib/skor";
 import SetupUsaha from "@/components/SetupUsaha";
@@ -13,12 +14,8 @@ export default async function DashboardPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const { data: tenant } = await supabase
-    .from("tenants")
-    .select("id, nama_usaha")
-    .eq("owner_id", user.id)
-    .limit(1)
-    .maybeSingle();
+  const { usahaAktif } = await getUsahaSaya();
+  const tenant = usahaAktif;
 
   if (!tenant) {
     return (
