@@ -26,6 +26,27 @@ export async function buatUsahaBaru(nama_usaha, jenis_usaha) {
     return { error: "Nama usaha wajib diisi" };
   }
 
+  // Cek batas jumlah usaha yang boleh dipunya user ini (diatur super admin
+  // lewat kolom profiles.batas_usaha di Supabase, default 3)
+  const { data: profil } = await supabase
+    .from("profiles")
+    .select("batas_usaha")
+    .eq("id", user.id)
+    .maybeSingle();
+  const batas = profil?.batas_usaha ?? 3;
+
+  const { count } = await supabase
+    .from("tenant_members")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", user.id)
+    .eq("peran", "owner");
+
+  if ((count || 0) >= batas) {
+    return {
+      error: `Usahamu sudah mencapai batas maksimal (${batas} usaha). Hubungi admin kalau butuh lebih.`,
+    };
+  }
+
   const { data: baru, error } = await supabase
     .from("tenants")
     .insert({

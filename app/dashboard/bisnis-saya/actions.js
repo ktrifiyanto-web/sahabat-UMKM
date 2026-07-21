@@ -89,6 +89,33 @@ export async function ubahPeranAnggota(tenantId, userId, peranBaru) {
   return { ok: true };
 }
 
+// Hapus usaha permanen. Wajib ketik ulang nama usaha persis buat
+// konfirmasi (dicek juga di server, bukan cuma di tampilan) -- soalnya
+// ini bakal ikut menghapus SEMUA transaksi/goal/catatan mentor di
+// usaha itu (on delete cascade), tidak bisa dibatalkan.
+export async function hapusUsaha(tenantId, namaKetik) {
+  const cek = await pastikanOwner(tenantId);
+  if (!cek.ok) return { error: cek.error };
+
+  const supabase = await createClient();
+  const { data: tenant } = await supabase
+    .from("tenants")
+    .select("nama_usaha")
+    .eq("id", tenantId)
+    .maybeSingle();
+
+  if (!tenant) return { error: "Usaha tidak ditemukan" };
+  if (tenant.nama_usaha.trim().toLowerCase() !== (namaKetik || "").trim().toLowerCase()) {
+    return { error: "Nama yang diketik tidak cocok, coba lagi" };
+  }
+
+  const { error } = await supabase.from("tenants").delete().eq("id", tenantId);
+  if (error) return { error: error.message };
+
+  revalidatePath("/dashboard/bisnis-saya");
+  return { ok: true };
+}
+
 export async function hapusAnggota(tenantId, userId) {
   const cek = await pastikanOwner(tenantId);
   if (!cek.ok) return { error: cek.error };
