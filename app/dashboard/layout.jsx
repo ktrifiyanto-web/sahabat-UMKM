@@ -30,6 +30,7 @@ export default async function DashboardLayout({ children }) {
     { href: "/dashboard", label: "Ringkasan", icon: "🏠", mobile: true },
     { href: "/dashboard/bisnis-saya", label: "Bisnis Saya", icon: "🏢", mobile: true },
     { href: "/dashboard/chat", label: "Chat Mentor", icon: "💬", mobile: true, badge: chatBelum },
+    { href: "/dashboard/pendamping-ai", label: "Pendamping AI", icon: "🤖", mobile: false },
     { divider: "Laporan Lengkap" },
     { href: "/dashboard/sektor", label: "Target & Sektor", icon: "🎯", mobile: true },
     { href: "/dashboard/project", label: "Project 90 Hari", icon: "🗂️", mobile: false },

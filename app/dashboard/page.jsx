@@ -117,6 +117,7 @@ export default async function DashboardPage() {
         <TautanKecil href="/dashboard/laporan" label="📈 Laporan Keuangan" />
         <TautanKecil href="/dashboard/sektor" label="🎯 Target & Sektor" />
         <TautanKecil href="/dashboard/chat" label="💬 Chat Mentor" />
+        <TautanKecil href="/dashboard/pendamping-ai" label="🤖 Pendamping AI" />
       </div>
     </div>
   );
